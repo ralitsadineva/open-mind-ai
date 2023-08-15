@@ -1,2 +1,2 @@
-# open-mind-ai
+# OpenMind AI
 AI API
