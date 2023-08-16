@@ -161,3 +161,10 @@ cython_debug/
 
 # Secret Key
 secret_key.txt
+
+# Environment variables
+.env
+
+# Models
+models/*
+!models/put_your_models_here.txt
