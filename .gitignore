@@ -159,6 +159,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Visual Studio Code
+.vscode/
+
 # Secret Key
 secret_key.txt
 
@@ -168,3 +171,6 @@ secret_key.txt
 # Models
 models/*
 !models/put_your_models_here.txt
+
+# Test
+test.py
