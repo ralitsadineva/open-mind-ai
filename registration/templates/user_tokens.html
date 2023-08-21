@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Your Tokens</h2>
+  <ul>
+    {% for token in tokens %}
+      <li>{{ token.key }}</li>
+    {% endfor %}
+  </ul>
+  <form method="post" action="{% url 'generate-token' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Generate New Token</button>
+  </form>
+</div>
+{% endblock %}
