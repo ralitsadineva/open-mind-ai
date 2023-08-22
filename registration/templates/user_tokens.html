@@ -6,7 +6,7 @@
   <h2>Your Tokens</h2>
   <ul>
     {% for token in tokens %}
-      <li>{{ token.key }}</li>
+      <li>{{ token }}</li>
     {% endfor %}
   </ul>
   <form method="post" action="{% url 'generate-token' %}">

@@ -1,12 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import TextClassifierSerializer
 from transformers import pipeline
 
 class TextClassifierView(APIView):
     serializer_class = TextClassifierSerializer
-    authentication_classes = []
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         serializer = TextClassifierSerializer(data=request.data)
