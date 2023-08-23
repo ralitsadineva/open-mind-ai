@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import JwtToken
 
@@ -42,10 +41,19 @@ def user_login_view(request):
 def user_tokens_view(request):
     user = request.user
     tokens = JwtToken.objects.filter(user=user)
-    return render(request, 'user_tokens.html', {'tokens': [token.token for token in tokens]})
+    return render(request, 'user_tokens.html', {'tokens': [[token.token, token.id] for token in tokens]})
 
 def generate_token_view(request):
     user = request.user
     refresh = RefreshToken.for_user(user)
     JwtToken.objects.create(user=user, token=str(refresh.access_token))
     return redirect('user-tokens')
+
+def delete_token_view(request, token_id):
+    try:
+        token = JwtToken.objects.get(id=token_id)
+        token.delete()
+        return redirect('user-tokens')
+    except JwtToken.DoesNotExist:
+        error_message = "Token not found."
+        return render(request, 'user_tokens.html', {'error_message': error_message})
