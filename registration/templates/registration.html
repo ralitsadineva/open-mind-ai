@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container mt-5">
   <h2>User Registration</h2>
+  {% include 'error_message.html' %}
   <form method="post" action="{% url 'user-registration' %}">
     {% csrf_token %}
     <div class="mb-3">
