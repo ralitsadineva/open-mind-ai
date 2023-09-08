@@ -8,11 +8,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         tokens = JwtToken.objects.all()
+        tokens_to_delete = []
         for token in tokens:
             try:
                 payload = jwt.decode(token.token, options={"verify_signature": False})
                 if payload.get('exp', 0) < (timezone.now() - timezone.timedelta(days=60)).timestamp():
-                    token.delete()
+                    tokens_to_delete.append(token.id)
             except (jwt.ExpiredSignatureError, jwt.DecodeError):
-                token.delete()
+                tokens_to_delete.append(token.id)
+        JwtToken.objects.filter(id__in=tokens_to_delete).delete()
         self.stdout.write(self.style.SUCCESS('Expired tokens deleted successfully'))
