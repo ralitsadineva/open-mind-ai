@@ -1,5 +1,6 @@
 from registration.models import RequestTime, JwtToken
 from django.utils.deprecation import MiddlewareMixin
+from django.core.cache import cache
 import time
 import datetime
 import logging
@@ -23,18 +24,30 @@ class RequestTimeMiddleware(MiddlewareMixin):
                 year = date.year
                 elapsed_time = request.end_time - request.start_time
 
-                request_entry, created = RequestTime.objects.get_or_create(
-                    token=token_object,
-                    month=month,
-                    year=year,
-                    defaults={'elapsed_time': elapsed_time}
-                )
-                logging.warning(f"Request Entry: {request_entry}, Created: {created}")
+                cache_key = f'request_time:{token_object.id}:{year}:{month}'
+                cached_data = cache.get(cache_key)
+                # logging.warning(f"Cache Key: {cache_key}, Cached Data: {cached_data}")
 
-                if not created:
-                    request_entry.elapsed_time += elapsed_time
-                    request_entry.save()
-            else:
-                # logging.warning("Invalid token format")
-                pass
+                if cached_data is None:
+                    request_entry, created = RequestTime.objects.get_or_create(
+                        token=token_object,
+                        month=month,
+                        year=year,
+                        defaults={'elapsed_time': elapsed_time}
+                    )
+                    # logging.warning(f"Request Entry: {request_entry}, Created: {created}")
+
+                    if not created:
+                        request_entry.elapsed_time += elapsed_time
+                        request_entry.save()
+                        cache.set(cache_key, request_entry.elapsed_time, 60 * 60 * 24)
+                    else:
+                        cache.set(cache_key, elapsed_time, 60 * 60 * 24)
+                else:
+                    cached_data += elapsed_time
+                    cache.set(cache_key, cached_data, 60 * 60 * 24)
+                    RequestTime.objects.filter(token=token_object, month=month, year=year).update(elapsed_time=cached_data)
+            # else:
+            #     # logging.warning("Invalid token format")
+            #     pass
         return response
