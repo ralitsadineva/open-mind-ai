@@ -8,8 +8,6 @@ from django.utils import timezone
 from datetime import datetime
 from .models import JwtToken
 import jwt
-import redis
-import logging
 
 redis_client = cache.client.get_client()
 
@@ -61,15 +59,12 @@ def user_logout_view(request):
 @login_required
 def user_tokens_view(request):
     user = request.user
-    # tokens = redis_client.smembers(f'user_tokens:{user.id}')
     tokens = redis_client.zrange(f'user_tokens:{user.id}', 0, -1, withscores=True)
-    logging.warning(f"Tokens cache: {tokens}")
     if not tokens:
         tokens_obj = JwtToken.objects.filter(user=user)
         tokens = []
         for token in tokens_obj:
             tokens.append((token.token.encode('utf-8'), token.id))
-    logging.warning(f"Tokens: {tokens}")
     token_info = []
 
     for token in tokens:
@@ -108,4 +103,5 @@ def delete_token_view(request, token_id):
     token = get_object_or_404(JwtToken, id=token_id, user=request.user)
     token.delete()
     redis_client.zrem(f'user_tokens:{request.user.id}', token.token)
+    cache.delete(f'token_object:{token.token}')
     return redirect('user-tokens')
