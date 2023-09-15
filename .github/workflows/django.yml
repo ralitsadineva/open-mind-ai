@@ -31,8 +31,8 @@ jobs:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         HOST: ${{ secrets.HOST }}
       run: |
-        export DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
-        export DATABASE_URL=$DATABASE_URL
+        export SECRET_KEY=$SECRET_KEY
+        export HOST=$HOST
     - name: Run Tests
       run: |
         python manage.py test
