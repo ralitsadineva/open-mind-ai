@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.utils import timezone
 from datetime import datetime
 from .models import JwtToken
+from constants.constants import USER_TOKEN_EXPIRATION_TIME
 import jwt
 
 redis_client = cache.client.get_client()
@@ -27,7 +28,7 @@ def user_registration_view(request):
             new_token = JwtToken.objects.create(user=user, token=str(refresh.access_token))
             cache_key = f'user_tokens:{user.id}'
             redis_client.zadd(cache_key, {new_token.token: new_token.id})
-            redis_client.expire(f'{cache_key}:{new_token.token}', 60 * 60 * 24 * 60)
+            redis_client.expire(f'{cache_key}:{new_token.token}', USER_TOKEN_EXPIRATION_TIME)
             return redirect('user-login')
         else:
             error_message = "Missing required information."
@@ -43,8 +44,6 @@ def user_login_view(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            # refresh = RefreshToken.for_user(user)
-            # JwtToken.objects.create(user=user, token=str(refresh.access_token))
             return redirect('user-tokens')
         else:
             error_message = "Invalid credentials."
@@ -95,7 +94,7 @@ def generate_token_view(request):
     new_token = JwtToken.objects.create(user=user, token=str(refresh.access_token))
     cache_key = f'user_tokens:{user.id}'
     redis_client.zadd(cache_key, {new_token.token: new_token.id})
-    redis_client.expire(f'{cache_key}:{new_token.token}', 60 * 60 * 24 * 60)
+    redis_client.expire(f'{cache_key}:{new_token.token}', USER_TOKEN_EXPIRATION_TIME)
     return redirect('user-tokens')
 
 @login_required

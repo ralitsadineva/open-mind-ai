@@ -1,4 +1,5 @@
 from registration.models import RequestTime, JwtToken
+from constants.constants import TOKEN_OBJECT_EXPIRATION_TIME, REQUEST_TIME_EXPIRATION_TIME
 from django.utils.deprecation import MiddlewareMixin
 from django.core.cache import cache
 from django.http import HttpResponse
@@ -29,7 +30,7 @@ class RequestTimeMiddleware(MiddlewareMixin):
                     except JwtToken.DoesNotExist:
                         message = 'Invalid token.'
                         return HttpResponse(message, status=401)
-                    cache.set(cache_key_token, token_object, 60 * 60 * 24)
+                    cache.set(cache_key_token, token_object, TOKEN_OBJECT_EXPIRATION_TIME)
                 date = datetime.date.today()
                 month = date.month
                 year = date.year
@@ -49,11 +50,11 @@ class RequestTimeMiddleware(MiddlewareMixin):
                     if not created:
                         request_entry.elapsed_time += elapsed_time
                         request_entry.save()
-                        cache.set(cache_key, request_entry.elapsed_time, 60 * 60 * 24)
+                        cache.set(cache_key, request_entry.elapsed_time, REQUEST_TIME_EXPIRATION_TIME)
                     else:
-                        cache.set(cache_key, elapsed_time, 60 * 60 * 24)
+                        cache.set(cache_key, elapsed_time, REQUEST_TIME_EXPIRATION_TIME)
                 else:
                     cached_data += elapsed_time
-                    cache.set(cache_key, cached_data, 60 * 60 * 24)
+                    cache.set(cache_key, cached_data, REQUEST_TIME_EXPIRATION_TIME)
                     RequestTime.objects.filter(token=token_object, month=month, year=year).update(elapsed_time=cached_data)
         return response
