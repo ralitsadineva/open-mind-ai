@@ -26,13 +26,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    # - name: Set up Environment Variables
-    #   env:
-    #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-    #     HOST: ${{ secrets.HOST }}
-    #   run: |
-    #     export SECRET_KEY=$SECRET_KEY
-    #     export HOST=$HOST
     - name: Run Tests
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -40,4 +33,10 @@ jobs:
       run: |
         export SECRET_KEY=$SECRET_KEY
         export HOST=$HOST
+        if telnet $HOST 5432; then
+          echo "PostgreSQL server is reachable on $HOST:5432"
+        else
+          echo "Unable to reach PostgreSQL server on $HOST:5432"
+          exit 1
+        fi
         python manage.py test
