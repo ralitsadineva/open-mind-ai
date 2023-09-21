@@ -9,7 +9,6 @@ from constants.constants import TEST_CACHE_SETTINGS
 @override_settings(CACHES=TEST_CACHE_SETTINGS)
 class MyApiTests(TestCase):
     def test_text_emotion(self):
-
         user = User.objects.create_user(username='testuser', password='testpassword')
         refresh = RefreshToken.for_user(user)
         token = JwtToken.objects.create(user=user, token=str(refresh.access_token))

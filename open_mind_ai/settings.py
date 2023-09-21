@@ -81,16 +81,24 @@ WSGI_APPLICATION = 'open_mind_ai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER':'postgres',
-        'PASSWORD':'admin',
-        'HOST':config('HOST'),
-        'PORT':'5432',
+if config('WORKFLOW_TEST', cast=bool, default=False):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER':'postgres',
+            'PASSWORD':'admin',
+            'HOST':config('HOST'),
+            'PORT':'5432',
+        }
+    }
 
 
 # Password validation
