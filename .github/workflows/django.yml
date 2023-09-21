@@ -30,13 +30,9 @@ jobs:
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         HOST: ${{ secrets.HOST }}
+        WORKFLOW_TEST: ${{ secrets.WORKFLOW_TEST }}
       run: |
         export SECRET_KEY=$SECRET_KEY
         export HOST=$HOST
-        if telnet $HOST 5432; then
-          echo "PostgreSQL server is reachable on $HOST:5432"
-        else
-          echo "Unable to reach PostgreSQL server on $HOST:5432"
-          exit 1
-        fi
+        export WORKFLOW_TEST=$WORKFLOW_TEST
         python manage.py test
