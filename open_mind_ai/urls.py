@@ -26,5 +26,4 @@ urlpatterns = [
     path('', include('registration.urls')),
     path('', include('text_emotion.urls')),
     path('', include('image_classifier.urls')),
-    path('', include('image_clothes.urls')),
 ]
