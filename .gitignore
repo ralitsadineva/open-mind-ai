@@ -174,3 +174,6 @@ models/*
 
 # Test
 test.py
+
+# Unused apps
+image_clothes/
