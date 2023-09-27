@@ -27,4 +27,5 @@ urlpatterns = [
     path('', include('text_emotion.urls')),
     path('', include('image_classifier.urls')),
     path('', include('image_object_detection.urls')),
+    path('', include('image_to_text.urls')),
 ]
