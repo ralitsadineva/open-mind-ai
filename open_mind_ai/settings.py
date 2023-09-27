@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'registration',
     'text_emotion',
     'image_classifier',
+    'image_object_detection',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
