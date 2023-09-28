@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  web:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: $PWD
+        target: /mnt/app
+    working_dir: /mnt/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+
+  postgres:
+    image: postgres:13.8-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  redis:
+    image: redis:7.2.0
+    ports:
+      - 6379:6379
+  
+  cron:
+    build:
+      context: ./cron
+    depends_on:
+      - web
+      - postgres
+    volumes:
+      - type: bind
+        source: $PWD
+        target: /mnt/app
+    working_dir: /mnt/app
+
+volumes:
+  pg_data:

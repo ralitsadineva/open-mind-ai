@@ -1,0 +1,1 @@
+0 0 * * * (/scripts/command.sh 2>&1) >/var/log/cron.log

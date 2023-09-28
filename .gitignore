@@ -158,3 +158,22 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Secret Key
+secret_key.txt
+
+# Environment variables
+.env
+
+# Models
+models/*
+!models/put_your_models_here.txt
+
+# Test
+test.py
+
+# Unused apps
+image_clothes/

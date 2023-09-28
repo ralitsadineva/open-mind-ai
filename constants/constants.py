@@ -1,0 +1,5 @@
+USER_TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 60
+TOKEN_OBJECT_EXPIRATION_TIME = 60 * 60 * 24
+REQUEST_TIME_EXPIRATION_TIME = 60 * 60 * 24
+
+TEST_CACHE_SETTINGS = {'default':{'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}}
